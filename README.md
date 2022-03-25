@@ -1,5 +1,13 @@
 # PySlowFast
 
+This repo is forked from the commit [77bd23b3ddf25d116aaa4d75992c109917392e38](https://github.com/facebookresearch/SlowFast/commit/77bd23b3ddf25d116aaa4d75992c109917392e38) in [facebookresearch/SlowFast](https://github.com/facebookresearch/SlowFast)
+
+Below is the original readme. 
+
+------
+
+# PySlowFast
+
 PySlowFast is an open source video understanding codebase from FAIR that provides state-of-the-art video classification models with efficient training. This repository includes implementations of the following methods:
 
 - [SlowFast Networks for Video Recognition](https://arxiv.org/abs/1812.03982)
