@@ -189,6 +189,7 @@ class TensorboardWriter(object):
         batch_idx=None,
         indexing_dict=None,
         heat_map=True,
+        thw_dict=None
     ):
         """
         Visualize weights/ activations tensors to Tensorboard.
@@ -206,6 +207,10 @@ class TensorboardWriter(object):
             heatmap (bool): whether to add heatmap to the weights/ activations.
         """
         for name, array in weight_activation_dict.items():
+            if name in thw_dict:
+                thw = thw_dict[name]
+            else:
+                thw = None
             if batch_idx is None:
                 # Select all items in the batch if batch_idx is not provided.
                 batch_idx = list(range(array.shape[0]))
@@ -222,6 +227,7 @@ class TensorboardWriter(object):
                 normalize=normalize,
                 global_step=global_step,
                 heat_map=heat_map,
+                thw=thw,
             )
 
     def flush(self):
@@ -329,6 +335,23 @@ def plot_hist(
             )
 
 
+def change_shape(input_tensor: torch.Tensor, thw: tuple):
+    C = input_tensor.shape[-1]
+    input_tensor = input_tensor[1:]  # (3136, 384) (THW, C)
+    # print('input_tensor =', input_tensor.shape)
+    # input_tensor:torch.Tensor
+    input_tensor = input_tensor.view(*thw, C)  # (4, 28, 28, 384) (T, H, W, C)
+    # print('input_tensor =', input_tensor.shape)
+    input_tensor = input_tensor[0]  # (28, 28, 384)
+    # print('input_tensor =', input_tensor.shape)
+
+    # input_tensor = torch.sum(input_tensor, dim=-1)
+    input_tensor = input_tensor[..., 0]  # (28, 28)
+
+    # print('input_tensor =', input_tensor.shape)
+    return input_tensor
+
+
 def add_ndim_array(
     writer,
     array,
@@ -337,6 +360,7 @@ def add_ndim_array(
     normalize=False,
     global_step=None,
     heat_map=True,
+    thw=None,
 ):
     """
     Visualize and add tensors of n-dimentionals to a Tensorboard SummaryWriter. Tensors
@@ -351,6 +375,8 @@ def add_ndim_array(
         global_step (Optional[int]): current step.
         heat_map (bool): whether to add heat map to 2D each 2D filters in array.
     """
+    if thw is None:
+        thw = {}
     if array is not None and array.ndim != 0:
         if array.ndim == 1:
             reshaped_array = array.unsqueeze(0)
@@ -375,6 +401,8 @@ def add_ndim_array(
         elif array.ndim == 2:
             reshaped_array = array
             if heat_map:
+                if len(thw) != 0:
+                    reshaped_array = change_shape(reshaped_array, thw)
                 heatmap = add_heatmap(reshaped_array)
                 writer.add_image(
                     name, heatmap, global_step=global_step, dataformats="CHW"

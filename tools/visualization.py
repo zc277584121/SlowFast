@@ -95,11 +95,11 @@ def run_visualization(vis_loader, model, cfg, writer=None):
                     meta[key] = val.cuda(non_blocking=True)
 
         if cfg.DETECTION.ENABLE:
-            activations, preds = model_vis.get_activations(
+            activations, preds, thws = model_vis.get_activations(
                 inputs, meta["boxes"]
             )
         else:
-            activations, preds = model_vis.get_activations(inputs)
+            activations, preds, thws = model_vis.get_activations(inputs)
         if cfg.TENSORBOARD.MODEL_VIS.GRAD_CAM.ENABLE:
             if cfg.TENSORBOARD.MODEL_VIS.GRAD_CAM.USE_TRUE_LABEL:
                 inputs, preds = gradcam(inputs, labels=labels)
@@ -108,6 +108,7 @@ def run_visualization(vis_loader, model, cfg, writer=None):
         if cfg.NUM_GPUS:
             inputs = du.all_gather_unaligned(inputs)
             activations = du.all_gather_unaligned(activations)
+            thws = du.all_gather_unaligned(thws)
             preds = du.all_gather_unaligned(preds)
             if isinstance(inputs[0], list):
                 for i in range(len(inputs)):
@@ -117,7 +118,7 @@ def run_visualization(vis_loader, model, cfg, writer=None):
                 inputs = [inp.cpu() for inp in inputs]
             preds = [pred.cpu() for pred in preds]
         else:
-            inputs, activations, preds = [inputs], [activations], [preds]
+            inputs, activations, preds, thws = [inputs], [activations], [preds], [thws]
 
         boxes = [None] * max(n_devices, 1)
         if cfg.DETECTION.ENABLE and cfg.NUM_GPUS:
@@ -129,6 +130,7 @@ def run_visualization(vis_loader, model, cfg, writer=None):
             for i in range(max(n_devices, 1)):
                 cur_input = inputs[i]
                 cur_activations = activations[i]
+                cur_thws = thws[i]
                 cur_batch_size = cur_input[0].shape[0]
                 cur_preds = preds[i]
                 cur_boxes = boxes[i]
@@ -184,6 +186,7 @@ def run_visualization(vis_loader, model, cfg, writer=None):
                             tag="Input {}/Activations: ".format(global_idx),
                             batch_idx=cur_batch_idx,
                             indexing_dict=indexing_dict,
+                            thw_dict= cur_thws
                         )
 
 

@@ -1,5 +1,16 @@
 # PySlowFast
 
+download the weights K400_MVIT_B_16x4_CONV.pyth first to your project dir.  
+then run the command:
+```python
+python run_net.py --cfg configs/Kinetics/MVIT_B_16x4_CONV.yaml DATA.PATH_TO_DATA_DIR ./ TEST.CHECKPOINT_FILE_PATH K400_MVIT_B_16x4_CONV.pyth TRAIN.ENABLE False TEST.ENABLE False
+```
+and you will get the feature maps of tensorboard result in dir `./runs-kinetics`.  
+and get the output attention maps is in dir `./output_test_imgs_time_2`.
+
+this is a temporary solution to plot attention and feature maps, I will continue to update this repo.
+
+---------
 This repo is forked from the commit [77bd23b3ddf25d116aaa4d75992c109917392e38](https://github.com/facebookresearch/SlowFast/commit/77bd23b3ddf25d116aaa4d75992c109917392e38) in [facebookresearch/SlowFast](https://github.com/facebookresearch/SlowFast)
 
 Below is the original readme. 

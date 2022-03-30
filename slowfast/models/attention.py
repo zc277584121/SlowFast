@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
-
+import random
 
 import numpy
 import torch
 import torch.nn as nn
-
+import math
+import matplotlib.pyplot as plt
 from slowfast.models.common import DropPath, Mlp
 
 
@@ -45,6 +46,216 @@ def attention_pool(tensor, pool, thw_shape, has_cls_embed=True, norm=None):
         tensor = tensor.squeeze(1)
     return tensor, thw_shape
 
+# def vis_attn(attn: torch.Tensor, out_shape: list):
+#     attn = attn.to('cpu').detach().numpy()
+#     # print('1111', attn.shape)
+#     # ([1, 1, 12545, 197])
+#     # (B, head_num, Nq + 1, Nkv + 1)
+#     attn = attn[0][0]
+#     # Nq + 1, Nkv + 1
+#     # 取了第一个通道，第一个头
+#
+#     C = attn.shape[0]
+#     # Nkv + 1
+#     print('attn.shape=', attn.shape)
+#     input_tensor = attn[:, 1:]  # (3136, 384) (THW, C)
+#     # Nq + 1, Nkv
+#
+#     thw = input_tensor.shape[-1]
+#     hw = thw // 4
+#     h = w = int(math.sqrt(hw))
+#     print('input_tensor.shape=', input_tensor.shape)
+#     input_tensor = input_tensor.reshape(C, 4, h, w)  # (4, 28, 28, 384) (T, H, W, C)
+#     print('2 input_tensor.shape =', input_tensor.shape)
+#     # Nq + 1, 4, H, W
+#
+#     # print('input_tensor =', input_tensor.shape)
+#     # input_tensor = input_tensor[1]  # (28, 28, 384)
+#     # # H, W, Nkv + 1
+#     # # 取了第2个时间片
+#     input_tensor = numpy.sum(input_tensor, axis=1)  # (28, 28, 384)
+#     # Nq + 1, H, W,
+#     # 时间片求和
+#
+#     # print('input_tensor =', input_tensor.shape)
+#
+#     # input_tensor = torch.sum(input_tensor, dim=-1)
+#     input_tensor = input_tensor[0, ...]  # (28, 28)
+#     # 取了Nkv 维度上的第0个位置，即cls_token
+#     # H, W
+#
+#     input_tensor = normalization(input_tensor)
+#     cm = plt.get_cmap("viridis")
+#     heatmap = cm(input_tensor)
+#     heatmap = heatmap[:, :, :3]
+#     # Convert (H, W, C) to (C, H, W)
+#     # heatmap = torch.Tensor(heatmap).permute(2, 0, 1)
+#     plt.imshow(heatmap)
+#     plt.show()
+#     # print('input_tensor =', input_tensor.shape)
+
+
+
+def vis_attn(attn: torch.Tensor, out_shape: list):
+    attn = attn.to('cpu').detach().numpy()
+    # out_shape = [s.numel() for s in out_shape]
+    # print('1111', attn.shape)
+    # ([1, 1, 12545, 197])
+    # (B, head_num, Nq + 1, Nkv + 1)
+    head_num = attn.shape[1]
+
+    # 取了第一个通道，第一个头
+    for head_idx in range(head_num):
+        one_head_attn = attn[0][head_idx]
+        # Nq + 1, Nkv + 1
+
+        C = one_head_attn.shape[-1]
+        # Nkv + 1
+        print('attn.shape=', one_head_attn.shape)
+        input_tensor = one_head_attn[1:]  # (3136, 384) (THW, C)
+        # Nq, Nkv + 1
+
+
+        print('input_tensor.shape=', input_tensor.shape)
+        input_tensor = input_tensor.reshape(*out_shape, C)  # (4, 28, 28, 384) (T, H, W, C)
+        print('2 input_tensor.shape =', input_tensor.shape)
+        # 4, H, W, Nkv + 1
+
+        # print('input_tensor =', input_tensor.shape)
+        input_tensor = input_tensor[1]  # (28, 28, 384)
+        # # H, W, Nkv + 1
+        # # 取了第2个时间片
+        # input_tensor = numpy.sum(input_tensor, axis=0)  # (28, 28, 384)
+        # H, W, Nkv + 1
+        # 取了第2个时间片
+
+        # print('input_tensor =', input_tensor.shape)
+
+        # input_tensor = torch.sum(input_tensor, dim=-1)
+        input_tensor = input_tensor[..., 0]  # (28, 28)
+        # 取了Nkv 维度上的第0个位置，即cls_token
+        # H, W
+
+        input_tensor = normalization(input_tensor)
+        cm = plt.get_cmap("viridis")
+        heatmap = cm(input_tensor)
+        heatmap = heatmap[:, :, :3]
+        # Convert (H, W, C) to (C, H, W)
+        # heatmap = torch.Tensor(heatmap).permute(2, 0, 1)
+        plt.imshow(heatmap)
+        # plt.show()
+        name = '/home/zhangchen/zhangchen_workspace/SlowFast/output_test_imgs_time_2/head_' + str(head_idx) + '_out_shape' + str(out_shape) + str(random.randint(100000, 200000)) + '.png'
+        print('name = ', name)
+        plt.savefig(name)
+        # print('input_tensor =', input_tensor.shape)
+
+
+
+# def vis_attn(attn: torch.Tensor, out_shape: list):
+#     attn = attn.to('cpu').detach()#.numpy()
+#     # print('1111', attn.shape)
+#     # ([1, 1, 12545, 197])
+#     # (B, head_num, Nq + 1, Nkv + 1)
+#     B, head_num, Nq, Nkv = attn.shape
+#     attn = attn[0] # get first example in a batch
+#     # (head_num, Nq + 1, Nkv + 1)
+#     for head_index in range(head_num):
+#         one_head_attn = attn[head_index]
+#         # (Nq + 1, Nkv + 1)
+#         # print('aaa', one_head_attn.shape)
+#         one_head_attn = one_head_attn[1:, 1:]
+#         # print('bbb', one_head_attn.shape)
+#         # (Nq, Nkv)
+#         one_head_attn = one_head_attn[0]
+#         # (Nkv)
+#
+#         Nkv = one_head_attn.shape[0] # t * h * w, t=4
+#         hw = Nkv / 4
+#         h = w = int(math.sqrt(hw))
+#         one_head_attn = one_head_attn.reshape(4, h, w)
+#         # 4, h, w
+#         print('h = ', h)
+#         print('w = ', w)
+#         one_head_attn = one_head_attn[0]
+#         one_head_attn = one_head_attn.numpy()
+#         # Get the color map by name.
+#         cm = plt.get_cmap("viridis")
+#
+#         one_head_attn = normalization(one_head_attn)
+#         print('one_head_attn.shape=', one_head_attn.shape)
+#         # print('one_head_attn.max()=', one_head_attn.max())
+#         # print('one_head_attn.min()=', one_head_attn.min())
+#         heatmap = cm(one_head_attn)
+#         heatmap = heatmap[:, :, :3]
+#         # Convert (H, W, C) to (C, H, W)
+#         # heatmap = torch.Tensor(heatmap).permute(2, 0, 1)
+#         plt.imshow(heatmap)
+#         plt.show()
+
+def normalization(data):
+    _range = numpy.max(data) - numpy.min(data)
+    return (data - numpy.min(data)) / _range
+
+
+def vis_attn_by_qk(q, k, scale):
+    q = q.to('cpu').detach()#.numpy()
+    k = k.to('cpu').detach()#.numpy()
+    # 1, 2, 12545, 96
+    # (B, num_heads, Nq + 1, C//num_heads)
+    q = q[0]  # get first example in a batch
+    # (num_heads, Nq + 1, C // num_heads)
+    k = k[0]  # get first example in a batch
+    # (num_heads, Nkv + 1, C // num_heads)
+    head_num = k.shape[0]
+    # (head_num, Nq + 1, Nkv + 1)
+    for head_index in range(head_num):
+        one_head_q = q[head_index]
+        one_head_k = k[head_index]
+
+        one_head_q = one_head_q[1:]
+        # Nq, C // num_heads
+        one_head_k = one_head_k[1:]
+        # Nkv, C // num_heads
+
+        Nq = one_head_q.shape[0]
+        one_head_q = one_head_q.reshape(4, Nq // 4, -1)
+        # 4, Nq // 4, C // num_heads        Nq // 4 = HW
+        Nkv = one_head_k.shape[0]
+        one_head_k = one_head_k.reshape(4, Nkv // 4, -1)
+        # 4, Nkv // 4, C // num_heads       Nkv // 4 = HW
+
+
+        one_head_q = one_head_q[0]
+        # HW, C // num_heads
+        one_head_k = one_head_k[0]
+        # HW, C // num_heads
+
+        print('one_head_q.shape=', one_head_q.shape)
+        print('one_head_k.shape=', one_head_k.shape)
+        print('scale = ', scale)
+        print('one_head_q @ one_head_k.transpose(-2, -1)).shape', (one_head_q @ one_head_k.transpose(-2, -1)).shape)
+        one_head_attn = (one_head_q @ one_head_k.transpose(-2, -1)) * scale
+        print('one_head_attn.shape=', one_head_attn.shape)
+        # HW * HW
+        # print('3 one_head_attn.shape =', one_head_attn.shape)
+        one_head_attn = one_head_attn.softmax(dim=-1)
+
+        # one_head_attn = one_head_attn[0] #todo
+        # one_head_attn = one_head_attn[:, 0] #todo
+        one_head_attn = torch.diagonal(one_head_attn) #todo
+        # HW
+        h = w = int(math.sqrt(one_head_attn.shape[0]))
+        print('h = ', h)
+        print('w = ', w)
+        one_head_attn = one_head_attn.reshape(h, w)
+        cm = plt.get_cmap("viridis")
+        one_head_attn = normalization(one_head_attn.numpy())
+        heatmap = cm(one_head_attn)
+        heatmap = heatmap[:, :, :3]
+        # Convert (H, W, C) to (C, H, W)
+        # heatmap = torch.Tensor(heatmap).permute(2, 0, 1)
+        plt.imshow(heatmap)
+        plt.show()
 
 class MultiScaleAttention(nn.Module):
     def __init__(
@@ -164,12 +375,21 @@ class MultiScaleAttention(nn.Module):
         B, N, C = x.shape
 
         qkv = (
+            # (B, N, C)
             self.qkv(x)
+            # (B, N, C*3)
             .reshape(B, N, 3, self.num_heads, C // self.num_heads)
+            # (B, N, 3, num_heads, C//num_heads)
             .permute(2, 0, 3, 1, 4)
+            # (3, B, num_heads, N, C//num_heads)
         )
+        print('self.num_heads =', self.num_heads)
         q, k, v = qkv[0], qkv[1], qkv[2]
-
+        # (B, num_heads, N, C//num_heads)
+        print('q.shape =', q.shape)
+        print('k.shape =', k.shape)
+        print('v.shape =', v.shape)
+        # vis_attn_by_qk(q, k, self.scale)
         q, out_shape = attention_pool(
             q,
             self.pool_q,
@@ -191,15 +411,23 @@ class MultiScaleAttention(nn.Module):
             has_cls_embed=self.has_cls_embed,
             norm=self.norm_v if hasattr(self, "norm_v") else None,
         )
-
+        
+        # print('2 q.shape =', q.shape)
+        # print('2 k.shape =', k.shape)
+        # print('2 v.shape =', v.shape)
         attn = (q @ k.transpose(-2, -1)) * self.scale
+        # print('3 attn.shape =', attn.shape)
         attn = attn.softmax(dim=-1)
-
+        # print('4 attn.shape =', attn.shape)
+        # print('attn.shape=', attn.shape)
         N = q.shape[2]
         x = (attn @ v).transpose(1, 2).reshape(B, N, C)
         x = self.proj(x)
         if self.drop_rate > 0.0:
             x = self.proj_drop(x)
+        # print('out_shape=', out_shape)
+        vis_attn(attn, out_shape)
+
         return x, out_shape
 
 

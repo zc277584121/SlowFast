@@ -196,7 +196,13 @@ class GetWeightAndActivation:
         """
 
         def hook_fn(module, input, output):
-            self.hooks[layer_name] = output.clone().detach()
+            if isinstance(output, torch.Tensor):
+                self.hooks[layer_name] = output.clone().detach()
+            elif isinstance(output, tuple):
+                self.hooks[layer_name] = {
+                    'output': output[0].clone().detach(),
+                    'thw': output[1]
+                }
 
         layer = get_layer(self.model, layer_name)
         layer.register_forward_hook(hook_fn)
@@ -227,11 +233,16 @@ class GetWeightAndActivation:
             preds = self.model(input_clone)
 
         activation_dict = {}
+        thw_dict = {}
         for layer_name, hook in self.hooks.items():
             # list of activations for each instance.
-            activation_dict[layer_name] = hook
+            if isinstance(hook, torch.Tensor):
+                activation_dict[layer_name] = hook
+            elif isinstance(hook, dict):
+                activation_dict[layer_name] = hook['output']
+                thw_dict[layer_name] = hook['thw']
 
-        return activation_dict, preds
+        return activation_dict, preds, thw_dict
 
     def get_weights(self):
         """
