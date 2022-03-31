@@ -1,6 +1,6 @@
 # PySlowFast
 ## 1.visualize the feature map and attention in MVit.
-download the weights K400_MVIT_B_16x4_CONV.pyth first to your project dir.
+download the weights [K400_MVIT_B_16x4_CONV.pyth](https://github.com/zc277584121/SlowFast/blob/main/MODEL_ZOO.md) first to your project dir.
 and then make sure your config file `MVIT_B_16x4_CONV.yaml` contains the layers your want to vis:
 ```yaml
 TENSORBOARD:
