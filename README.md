@@ -42,32 +42,32 @@ and just run this command and you will get the vis gif corresponding to your cus
 `start_sec` and `end_sec` correspond to your clip time second in your video.
 `sec_delta` is the sample interval.
 and you can get the .gif files in your projects.  
-there listing some of them: 
+there listing some of them:   
 blocks_0 feature map:
 ![](readme_img/blocks_0.gif)
 
-blocks_1 feature map:
+blocks_1 feature map:  
 ![](readme_img/blocks_1.gif)
 
-blocks_2 feature map:
+blocks_2 feature map:  
 ![](readme_img/blocks_2.gif)
 
-blocks_3 feature map:
+blocks_3 feature map:  
 ![](readme_img/blocks_3.gif)
 
-blocks_0 head_0 attention map:
+blocks_0 head_0 attention map:  
 ![](readme_img/blocks_0_attn_show_attn_head_0.gif)
 
-blocks_1 head_0 attention map:
+blocks_1 head_0 attention map:  
 ![](readme_img/blocks_1_attn_show_attn_head_0.gif)
 
-blocks_1 head_1 attention map:
+blocks_1 head_1 attention map:  
 ![](readme_img/blocks_1_attn_show_attn_head_1.gif)
 
-blocks_2 head_0 attention map:
+blocks_2 head_0 attention map:  
 ![](readme_img/blocks_2_attn_show_attn_head_0.gif)
 
-blocks_2 head_1 attention map:
+blocks_2 head_1 attention map:  
 ![](readme_img/blocks_2_attn_show_attn_head_1.gif)
 
 ---------
