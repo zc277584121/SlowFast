@@ -78,6 +78,7 @@ def run_visualization(vis_loader, model, cfg, writer=None):
         )
     logger.info("Finish drawing weights.")
     global_idx = -1
+    print('len(vis_loader)=', len(vis_loader))
     for inputs, labels, _, meta in tqdm.tqdm(vis_loader):
         if cfg.NUM_GPUS:
             # Transfer the data to the current GPU device.
@@ -135,6 +136,7 @@ def run_visualization(vis_loader, model, cfg, writer=None):
                 cur_preds = preds[i]
                 cur_boxes = boxes[i]
                 for cur_batch_idx in range(cur_batch_size):
+                    print('cur_batch_size = ', cur_batch_size)
                     global_idx += 1
                     total_vids += 1
                     if (

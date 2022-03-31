@@ -59,6 +59,49 @@ def parse_args():
         default=None,
         nargs=argparse.REMAINDER,
     )
+
+    parser.add_argument(
+        "--video_path",
+        dest="video_path",
+        help="video_path",
+        default="your_video.mp4",
+        type=str,
+    )
+    parser.add_argument(
+        "--start_sec",
+        dest="start_sec",
+        help="start_sec",
+        default=0,
+        type=float,
+    )
+    parser.add_argument(
+        "--end_sec",
+        dest="end_sec",
+        help="end_sec",
+        default=None,
+        type=float,
+    )
+    parser.add_argument(
+        "--sec_delta",
+        dest="sec_delta",
+        help="sec_delta",
+        default=None,
+        type=float,
+    )
+    parser.add_argument(
+        "--show_img",
+        dest="show_img",
+        help="if true, plot vis imgs",
+        default=False,
+        type=bool,
+    )
+    parser.add_argument(
+        "--save_gif",
+        dest="save_gif",
+        help="if true, save vis gif, end_sec and sec_delta should not be None",
+        default=False,
+        type=bool,
+    )
     if len(sys.argv) == 1:
         parser.print_help()
     return parser.parse_args()

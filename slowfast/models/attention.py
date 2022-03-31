@@ -284,6 +284,7 @@ class MultiScaleAttention(nn.Module):
 
         self.qkv = nn.Linear(dim, dim * 3, bias=qkv_bias)
         self.proj = nn.Linear(dim, dim)
+        self.show_attn = nn.Softmax(dim=-1)
         if drop_rate > 0.0:
             self.proj_drop = nn.Dropout(drop_rate)
 
@@ -383,12 +384,12 @@ class MultiScaleAttention(nn.Module):
             .permute(2, 0, 3, 1, 4)
             # (3, B, num_heads, N, C//num_heads)
         )
-        print('self.num_heads =', self.num_heads)
+        # print('self.num_heads =', self.num_heads)
         q, k, v = qkv[0], qkv[1], qkv[2]
         # (B, num_heads, N, C//num_heads)
-        print('q.shape =', q.shape)
-        print('k.shape =', k.shape)
-        print('v.shape =', v.shape)
+        # print('q.shape =', q.shape)
+        # print('k.shape =', k.shape)
+        # print('v.shape =', v.shape)
         # vis_attn_by_qk(q, k, self.scale)
         q, out_shape = attention_pool(
             q,
@@ -417,7 +418,8 @@ class MultiScaleAttention(nn.Module):
         # print('2 v.shape =', v.shape)
         attn = (q @ k.transpose(-2, -1)) * self.scale
         # print('3 attn.shape =', attn.shape)
-        attn = attn.softmax(dim=-1)
+        # attn = attn.softmax(dim=-1)
+        attn = self.show_attn(attn)
         # print('4 attn.shape =', attn.shape)
         # print('attn.shape=', attn.shape)
         N = q.shape[2]
@@ -426,7 +428,7 @@ class MultiScaleAttention(nn.Module):
         if self.drop_rate > 0.0:
             x = self.proj_drop(x)
         # print('out_shape=', out_shape)
-        vis_attn(attn, out_shape)
+        # vis_attn(attn, out_shape) #todo
 
         return x, out_shape
 

@@ -945,7 +945,9 @@ class MViT(nn.Module):
             return {}
 
     def forward(self, x):
+        print('len(x)=',len(x))
         x = x[0]
+        print('x.shape=', x.shape)
         x = self.patch_embed(x)
 
         T = self.cfg.DATA.NUM_FRAMES // self.patch_stride[0]

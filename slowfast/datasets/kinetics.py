@@ -183,15 +183,17 @@ class Kinetics(torch.utils.data.Dataset):
                     self._spatial_temporal_idx[index]
                     % self.cfg.TEST.NUM_SPATIAL_CROPS
                 )
-                if self.cfg.TEST.NUM_SPATIAL_CROPS > 1
+                if self.cfg.TEST.NUM_SPATIAL_CROPS >= 1
                 else 1
             )
+            print('spatial_sample_index = ', spatial_sample_index)
             min_scale, max_scale, crop_size = (
                 [self.cfg.DATA.TEST_CROP_SIZE] * 3
-                if self.cfg.TEST.NUM_SPATIAL_CROPS > 1
+                if self.cfg.TEST.NUM_SPATIAL_CROPS >= 1
                 else [self.cfg.DATA.TRAIN_JITTER_SCALES[0]] * 2
                 + [self.cfg.DATA.TEST_CROP_SIZE]
             )
+            print('min_scale, max_scale, crop_size=', min_scale, max_scale, crop_size)
             # The testing is deterministic and no jitter should be performed.
             # min_scale, max_scale, and crop_size are expect to be the same.
             assert len({min_scale, max_scale}) == 1
@@ -309,6 +311,11 @@ class Kinetics(torch.utils.data.Dataset):
 
             label = self._labels[index]
             frames = utils.pack_pathway_output(self.cfg, frames)
+            print('frames=', frames)
+            print('type(frames)', type(frames))
+            print('type(label)=', type(label))
+            print('label=', label)
+            print('index=', index)
             return frames, label, index, {}
         else:
             raise RuntimeError(

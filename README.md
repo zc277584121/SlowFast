@@ -1,15 +1,68 @@
 # PySlowFast
-
-download the weights K400_MVIT_B_16x4_CONV.pyth first to your project dir.  
+## 1.visualize the feature map and attention in MVit.
+download the weights K400_MVIT_B_16x4_CONV.pyth first to your project dir.
+and then make sure your config file `MVIT_B_16x4_CONV.yaml` contains the layers your want to vis:
+```yaml
+TENSORBOARD:
+  ENABLE: True
+  CLASS_NAMES_PATH: "./CLASS_NAMES.json"
+  MODEL_VIS:
+    ENABLE: True
+    MODEL_WEIGHTS: True # Set to True to visualize model weights.
+    ACTIVATIONS: True # Set to True to visualize feature maps.
+    INPUT_VIDEO: True # Set to True to visualize the input video(s) for the corresponding feature maps.
+    LAYER_LIST:
+      - blocks/0 # List of layer names to visualize weights and activations for.
+      - blocks/1
+      - blocks/2
+      - blocks/3
+      - blocks/4
+      - blocks/5
+      - blocks/0/attn/show_attn
+      - blocks/1/attn/show_attn
+      - blocks/2/attn/show_attn
+      - blocks/3/attn/show_attn
+      - blocks/4/attn/show_attn
+      - blocks/5/attn/show_attn
+```
 then run the command:
 ```python
-python run_net.py --cfg configs/Kinetics/MVIT_B_16x4_CONV.yaml DATA.PATH_TO_DATA_DIR ./ TEST.CHECKPOINT_FILE_PATH K400_MVIT_B_16x4_CONV.pyth TRAIN.ENABLE False TEST.ENABLE False
+python show_demo.py --video_path your_video.mp4 --start_sec 0 --show_img true
 ```
-and you will get the feature maps of tensorboard result in dir `./runs-kinetics`.  
-and get the output attention maps is in dir `./output_test_imgs_time_2`.
+`start_sec` is the frame time second in your video.  
+and you will see the output of the feature map from block/0 to block/5:
+![](readme_img/feature_map.png)
+and the attn map from blocks/0/attn/show_attn to blocks/5/attn/show_attn:
+![](readme_img/attn_map.png)
+## 2 vis the video to gif
+and just run this command and you will get the vis gif corresponding to your custom layer output.
+```python
+--video_path your_video.mp4 --start_sec 0 --end_sec 3 --sec_delta 0.2 --save_gif true
+```
+`start_sec` and `end_sec` correspond to your clip time second in your video.
+`sec_delta` is the sample interval.
+and you can get the .gif files in your projects.  
+there listing some of them.  
+blocks_0 feature map:
+![](readme_img/blocks_0.gif)
+blocks_1 feature map:
+![](readme_img/blocks_1.gif)
+blocks_2 feature map:
+![](readme_img/blocks_2.gif)
+blocks_3 feature map:
+![](readme_img/blocks_3.gif)
 
-this is a temporary solution to plot attention and feature maps, I will continue to update this repo.
+blocks_0 head_0 attention map:
+![](readme_img/blocks_0_attn_show_attn_head_0.gif)
 
+blocks_1 head_0 attention map:
+![](readme_img/blocks_1_attn_show_attn_head_0.gif)
+blocks_1 head_1 attention map:
+![](readme_img/blocks_1_attn_show_attn_head_1.gif)
+blocks_2 head_0 attention map:
+![](readme_img/blocks_2_attn_show_attn_head_0.gif)
+blocks_2 head_1 attention map:
+![](readme_img/blocks_2_attn_show_attn_head_1.gif)
 ---------
 This repo is forked from the commit [77bd23b3ddf25d116aaa4d75992c109917392e38](https://github.com/facebookresearch/SlowFast/commit/77bd23b3ddf25d116aaa4d75992c109917392e38) in [facebookresearch/SlowFast](https://github.com/facebookresearch/SlowFast)
 

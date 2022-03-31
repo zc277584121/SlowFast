@@ -83,7 +83,7 @@ MODEL:
 TEST:
   ENABLE: True
   DATASET: kinetics
-  BATCH_SIZE: 2 #64
+  BATCH_SIZE: 1 #64
 #  NUM_SPATIAL_CROPS: 1
 DATA_LOADER:
   NUM_WORKERS: 8
@@ -102,22 +102,30 @@ TENSORBOARD:
     ACTIVATIONS: True # Set to True to visualize feature maps.
     INPUT_VIDEO: True # Set to True to visualize the input video(s) for the corresponding feature maps.
     LAYER_LIST:
-      - blocks/0 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/1 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/2 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/3 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/4 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/5 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/6 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/7 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/8 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/9 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/10 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/11 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/12 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/13 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/14 #/attn  #/proj # List of layer names to visualize weights and activations for.
-      - blocks/15 #/attn  #/proj # List of layer names to visualize weights and activations for.
+      - blocks/0 # List of layer names to visualize weights and activations for.
+      - blocks/1
+      - blocks/2
+      - blocks/3
+      - blocks/4
+      - blocks/5
+      - blocks/0/attn/show_attn
+      - blocks/1/attn/show_attn
+      - blocks/2/attn/show_attn
+      - blocks/3/attn/show_attn
+      - blocks/4/attn/show_attn
+      - blocks/5/attn/show_attn
+
+#      - blocks/5
+#      - blocks/6
+#      - blocks/7
+#      - blocks/8
+#      - blocks/9
+#      - blocks/10
+#      - blocks/11
+#      - blocks/12
+#      - blocks/13
+#      - blocks/14
+#      - blocks/15
     GRAD_CAM:
       ENABLE: False
       LAYER_LIST:

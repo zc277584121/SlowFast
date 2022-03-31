@@ -333,6 +333,7 @@ def create_sampler(dataset, shuffle, cfg):
     Returns:
         sampler (Sampler): the created sampler.
     """
+    print('cfg.NUM_GPUS=', cfg.NUM_GPUS)
     sampler = DistributedSampler(dataset) if cfg.NUM_GPUS > 1 else None
 
     return sampler
