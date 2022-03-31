@@ -43,7 +43,8 @@ and just run this command and you will get the vis gif corresponding to your cus
 `sec_delta` is the sample interval.
 and you can get the .gif files in your projects.  
 there listing some of them:   
-blocks_0 feature map:
+
+blocks_0 feature map:  
 ![](readme_img/blocks_0.gif)
 
 blocks_1 feature map:  
