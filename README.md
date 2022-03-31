@@ -51,10 +51,8 @@ blocks_2 feature map:
 ![](readme_img/blocks_2.gif)
 blocks_3 feature map:
 ![](readme_img/blocks_3.gif)
-
 blocks_0 head_0 attention map:
 ![](readme_img/blocks_0_attn_show_attn_head_0.gif)
-
 blocks_1 head_0 attention map:
 ![](readme_img/blocks_1_attn_show_attn_head_0.gif)
 blocks_1 head_1 attention map:
