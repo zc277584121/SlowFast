@@ -75,6 +75,7 @@ blocks_2 head_1 attention map:
 #### heap map integrate
 - transformer structure
 [Transformer-Explainability](https://github.com/hila-chefer/Transformer-Explainability)
+![](readme_img/dog.2022-04-01 11_14_51.gif)
 - cnn structure
 [Grad-CAM](https://towardsdatascience.com/understand-your-algorithm-with-grad-cam-d3b62fce353)
 #### integrate to towhee vis util
