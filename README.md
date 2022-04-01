@@ -70,6 +70,16 @@ blocks_2 head_0 attention map:
 
 blocks_2 head_1 attention map:  
 ![](readme_img/blocks_2_attn_show_attn_head_1.gif)
+--------
+# todo
+#### heap map integrate
+- transformer structure
+[Transformer-Explainability](https://github.com/hila-chefer/Transformer-Explainability)
+- cnn structure
+[Grad-CAM](https://towardsdatascience.com/understand-your-algorithm-with-grad-cam-d3b62fce353)
+#### integrate to towhee vis util
+[towhee vis util](https://docs.towhee.io/fine-tune/train-operators/train-a-bird-classification-model/)
+
 
 ---------
 This repo is forked from the commit [77bd23b3ddf25d116aaa4d75992c109917392e38](https://github.com/facebookresearch/SlowFast/commit/77bd23b3ddf25d116aaa4d75992c109917392e38) in [facebookresearch/SlowFast](https://github.com/facebookresearch/SlowFast)
