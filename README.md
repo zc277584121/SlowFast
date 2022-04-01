@@ -25,6 +25,8 @@ TENSORBOARD:
       - blocks/4/attn/show_attn
       - blocks/5/attn/show_attn
 ```
+and prepare a video. It's our demo video, and it's a clip in kinetics-400:
+![](readme_img/drink.gif)  
 then run the command:
 ```python
 python show_demo.py --video_path your_video.mp4 --start_sec 0 --show_img true
